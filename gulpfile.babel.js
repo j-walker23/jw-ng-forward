@@ -165,6 +165,20 @@ gulp.task('watch/ts-to-es6', () => {
   gulp.watch('lib/**/*.ts', ['build/ts-to-es6']);
 });
 
+gulp.task('dev/cjs', done => {
+  runSequence(
+    'build/ts-to-es6',
+    'build/lib-to-es6',
+    'build/es6-to-cjs',
+    done
+  );
+});
+
+gulp.task('watch/cjs', () => {
+  // gulp.watch('lib/**/*.ts', ['build/ts-to-es6', 'build/lib-to-es6', 'build/es6-to-cjs']);
+  gulp.watch('lib/**/*.ts', ['dev/cjs']);
+});
+
 gulp.task('build', done => {
   runSequence(
     'clean-dist',
@@ -184,8 +198,8 @@ gulp.task('build', done => {
 
 gulp.task('dev', done => {
   runSequence(
-    'build/ts-to-es6',
-    ['watch/ts-to-es6'],
+    'build',
+    ['watch/cjs'],
     done
   );
 });

@@ -12,13 +12,13 @@ import CustomEvent from '../util/custom-event';
 // Takes an instance of the controller, element of the component for dispatching
 // the output, $scope for disposing of subscriptions, and a map of the emitters and
 // outputs that might be on the instance
-export function outputsBuilder(instance: any, element: INgForwardJQuery, $scope: angular.IScope, outputs: any){
+export function outputsBuilder(instance: any, element: any, $scope: angular.IScope, outputs: any){
   // Collection of subscriptions we'll generate
   let subscriptions: any[] = [];
 
   // Create a subscription to the event emitter. When we observe a new value,
   // dispatch a bubbling event onto the element
-  const create = (eventKey: string, emitter: EventEmitter) => {
+  const create = (eventKey: string, emitter: EventEmitter<any>) => {
     return emitter.subscribe((data: any) => {
       let event = new CustomEvent(eventKey, { detail: {_output: data}, bubbles: false });
       element[0].dispatchEvent(event);

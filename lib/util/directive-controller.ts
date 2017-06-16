@@ -43,7 +43,7 @@ export function directiveControllerFactory(caller: any, injects: string[], contr
   outputsBuilder(instance, $element, $scope, ddo.outputMap || {})
 
   if (typeof instance.ngOnInit === 'function') {
-    ddo.$onInit = instance.ngOnInit.bind(instance)
+    instance.$onInit = instance.ngOnInit.bind(instance)
   }
 
   if (typeof instance.ngOnChanges === 'function') {
