@@ -154,7 +154,7 @@ componentHooks.after((target: any, name: string, injects: string[], ngModule: an
 
         // config.controller = config.controller || [...injects, stateController]
         let name = providerStore.get('name', config.component)
-        console.log('state', name, config)
+        // console.log('state', name, config)
         config.component = name
       }
 

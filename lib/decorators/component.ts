@@ -120,17 +120,17 @@ export function Component({
     Providers(...providers)(t, `while analyzing Component '${t.name}' providers`)
 
     // Restrict type must be 'element'
-    componentStore.set('restrict', restrict, t)
+    // componentStore.set('restrict', restrict, t)
 
     // Components should always create an isolate scope
-    componentStore.set('scope', {}, t)
+    // componentStore.set('scope', {}, t)
 
     // Since components must have a template, set transclude to true
-    componentStore.set('transclude', transclude, t)
+    componentStore.set('transclude', transclude, t);
 
     // Inputs should always be bound to the controller instance, not
     // to the scope
-    componentStore.set('bindToController', true, t);
+    // componentStore.set('bindToController', true, t);
 
     // Must perform some basic shape checking on the config object
     [
@@ -259,7 +259,7 @@ Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule
   componentHooks._extendDDO.forEach(hook => hook(ddo, target, name, injects, ngModule))
 
   // Finally add the component to the raw module
-  console.log('component', name, ddo)
+  // console.log('component', name, ddo)
   ngModule.component(name, ddo)
 
   componentHooks._after.forEach(hook => hook(target, name, injects, ngModule))
