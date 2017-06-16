@@ -228,14 +228,6 @@ Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule
     ddo.bindings = inputsMap(ddo.inputMap)
   }
 
-  // If the selector type was not an element, throw an error. Components can only
-  // be elements in Angular 2, so we want to enforce that strictly here.
-  if (ddo.restrict !== 'E') {
-    throw new Error(createConfigErrorMessage(target, ngModule,
-      `@Component selectors can only be elements. ` +
-      `Perhaps you meant to use @Directive?`))
-  }
-
   // Component controllers must be created from a factory. Checkout out
   // util/directive-controller.js for more information about what's going on here
   controller.$inject = ['$scope', '$element', '$attrs', '$transclude', '$injector']
@@ -247,10 +239,6 @@ Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule
   }
 
   ddo.controller = controller
-
-  if (typeof target.prototype.ngAfterViewInit === 'function') {
-    ddo.link = () => ddo.ngAfterViewInitBound()
-  }
 
   if (ddo.template && ddo.template.replace) {
     ddo.template = ddo.template.replace(/ng-content/g, 'ng-transclude')
