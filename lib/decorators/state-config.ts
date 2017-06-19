@@ -33,6 +33,7 @@ export function StateConfig(stateConfigs: IComponentState[]) {
 
     // Add all routed components as providers to this parent component so they are included in the bundle
     Providers(...flatten(stateConfigs.map(sc => sc.component)))(t, `while analyzing StateConfig '${t.name}' state components`)
+    componentStore.set(childConfigsKey, stateConfigs, t);
   }
 }
 
