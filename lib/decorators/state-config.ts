@@ -2,20 +2,13 @@ import { bundleStore, componentStore, providerStore } from '../writers'
 import { Providers } from './providers'
 import { componentHooks } from './component'
 import { createConfigErrorMessage, flatten } from '../util/helpers'
-import { getInjectableName } from '../util/get-injectable-name'
 import IState = angular.ui.IState
-import IStateProvider = angular.ui.IStateProvider
 
 const configsKey = 'ui-router.stateConfigs'
 const childConfigsKey = 'ui-router.stateChildConfigs'
 const annotatedResolvesKey = 'ui-router.annotatedResolves'
 const resolvedMapKey = 'ui-router.resolvedMap'
 
-export interface INamedViewState extends IState {
-  views: {
-    [name: string]: IComponentState
-  };
-}
 
 export interface IComponentState extends IState {
   component: any;
@@ -35,26 +28,11 @@ export interface IComponentState extends IState {
  * ])
  * class App {}
  */
-export function StateConfig(stateConfigs: IComponentState[] | INamedViewState[]) {
+export function StateConfig(stateConfigs: IComponentState[]) {
   return function(t: any) {
 
     // Add all routed components as providers to this parent component so they are included in the bundle
-    Providers(...flatten(stateConfigs.map(sc => {
-      if (sc.component) return sc.component
-      return Object.keys(sc.views).map(key => sc.views[key].component)
-    })))(t, `while analyzing StateConfig '${t.name}' state components`)
-
-
-    // Store the state configs in the parent component's metadata...
-    componentStore.set(childConfigsKey, stateConfigs, t)
-
-    // ...But also store each child's own config in that child component's metadata
-    // currently not used, but might be useful in the future.
-    stateConfigs.forEach(config => {
-      if (!config.component) return
-      let existingConfigs = componentStore.get(configsKey, config.component) || []
-      componentStore.set(configsKey, [...existingConfigs, config], config.component)
-    })
+    Providers(...flatten(stateConfigs.map(sc => sc.component)))(t, `while analyzing StateConfig '${t.name}' state components`)
   }
 }
 
@@ -114,13 +92,11 @@ componentHooks.after((target: any, name: string, injects: string[], ngModule: an
       throw new TypeError(createConfigErrorMessage(target, ngModule, '@StateConfig param must be an array of state objects.'))
     }
 
-    ngModule.config(['$stateProvider', function($stateProvider: IStateProvider) {
-      if (!$stateProvider) return
+    ngModule.config(['$stateRegistryProvider', function($stateRegistry) {
+      // if (!$stateProvider) return
 
       function setupConfig(config) {
-        // Grab tag name from component, use it to build a minimal state template
-        const tagName = bundleStore.get('selector', config.component)
-        // config.template = config.template || `<${tagName} class="default-tpl"></${tagName}>`
+        if (!config.component) return null
 
         // You can add resolves in two ways: a 'resolve' property on the StateConfig, or via
         // the @Resolve decorator. These lines handle merging of the two (@Resolve takes precedence)
@@ -134,41 +110,22 @@ componentHooks.after((target: any, name: string, injects: string[], ngModule: an
         })
         config.resolve = Object.assign({}, config.resolve, annotatedResolves)
 
-        // Now grab all the @Inject-eds on the state component, map those injectables to
-        // their injectable names (in case they aren't strings). Construct a state controller
-        // that asks for those injected items. If any of them are resolves that will give us
-        // the fully resolved values of those resolves. We create a map of the resolved values
-        // and write the map as metadata on the state component. The map is then used below in
-        // the beforeCtrlInvoke hook to add the resolved values as locals to our component's
-        // constructor.
-        const childInjects = bundleStore.get('$inject', config.component)
-        const injects = childInjects ? childInjects.map(getInjectableName) : []
+        let name = providerStore.get('name', config.component)
 
-        function stateController(...resolves): any {
-          const resolvedMap = resolves.reduce((obj, val, i) => {
-            obj[injects[i]] = val
-            return obj
-          }, {})
-          componentStore.set(resolvedMapKey, resolvedMap, config.component)
+        if (config.root) {
+          config.component = name
+        } else {
+          let root = config.name.split('.')[0]
+          config.views = { [`@${root}`]: name }
+          delete config.component
         }
 
-        // config.controller = config.controller || [...injects, stateController]
-        let name = providerStore.get('name', config.component)
-        // console.log('state', name, config)
-        config.component = name
+        return config
       }
 
-
       childStateConfigs.forEach((config: IComponentState) => {
-
-        if (config.component) {
-          setupConfig(config)
-        } else {
-          Object.keys(config.views).map(key => setupConfig(config.views[key]))
-        }
-
-        // Now actually add the state to $stateProvider
-        $stateProvider.state(config.name, config)
+        let conf = setupConfig(Object.assign({}, config))
+        if (conf) $stateRegistry.register(conf)
       })
     }])
   }
