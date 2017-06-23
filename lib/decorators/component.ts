@@ -55,6 +55,20 @@ import { directiveControllerFactory } from '../util/directive-controller'
 
 const TYPE = 'component'
 
+export interface CompType {
+  selector: string,
+  controllerAs?: string,
+  template?: string,
+  templateUrl?: string,
+  transclude?: any,
+  providers?: any[],
+  inputs?: string[],
+  outputs?: string[],
+  pipes?: any[],
+  directives?: any[],
+  [key: string]: any
+}
+
 export const componentHooks = {
   _after: [],
   _extendDDO: [],
@@ -87,18 +101,7 @@ export function Component({
                             outputs = [],
                             pipes = [],
                             directives = []
-                          }: {
-  selector: string,
-  controllerAs?: string,
-  template?: string,
-  templateUrl?: string,
-  transclude: any,
-  providers?: any[],
-  inputs?: string[],
-  outputs?: string[],
-  pipes?: any[],
-  directives?: any[]
-}) {
+                          }: CompType) {
   return function(t: any) {
     // The only required config is a selector. If one wasn't passed, throw immediately
     if (!selector) {

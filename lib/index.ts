@@ -3,6 +3,7 @@ import { Metastore } from './classes/metastore'
 import { OpaqueToken } from './classes/opaque-token'
 import { Provider, provide } from './classes/provider'
 import { Component, View } from './decorators/component'
+import { DirComp } from './decorators/dir-component'
 import { Directive } from './decorators/directive'
 import { Inject } from './decorators/inject'
 import { Injectable } from './decorators/injectable'
@@ -26,7 +27,7 @@ export {
   Module, Metastore, OpaqueToken, Provider, provide,
 
   // Decorators
-  Component, View, Directive, Inject, Injectable, Pipe, Providers, Input, Output, StateConfig, Resolve,
+  Component, DirComp, View, Directive, Inject, Injectable, Pipe, Providers, Input, Output, StateConfig, Resolve,
 
   // Events
   events, EventEmitter,
