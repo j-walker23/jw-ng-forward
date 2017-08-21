@@ -45,7 +45,6 @@ import { Module } from '../classes/module'
 import { writeMapMulti } from './input-output'
 import { inputsMap } from '../properties/inputs-builder'
 import { events } from '../events/events'
-import { createConfigErrorMessage } from '../util/helpers'
 import { directiveControllerFactory } from '../util/directive-controller'
 // `providerStore` sets up provider information, `componentStore` writes the DDO,
 // and `appWriter` sets up app traversal/bootstrapping information.
@@ -60,12 +59,14 @@ export interface CompType {
   controllerAs?: string,
   template?: string,
   templateUrl?: string,
+  bindings?: any,
   transclude?: any,
   providers?: any[],
   inputs?: string[],
   outputs?: string[],
   pipes?: any[],
   directives?: any[],
+
   [key: string]: any
 }
 
@@ -95,6 +96,7 @@ export function Component({
                             controllerAs,
                             template,
                             templateUrl,
+                            bindings = {},
                             transclude = true,
                             providers = [],
                             inputs = [],
@@ -130,6 +132,7 @@ export function Component({
 
     // Since components must have a template, set transclude to true
     componentStore.set('transclude', transclude, t);
+    componentStore.set('bindings', bindings, t);
 
     // Inputs should always be bound to the controller instance, not
     // to the scope
@@ -222,13 +225,12 @@ Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule
   // Loop through the key/val pairs of metadata and assign it to the DDO
   componentStore.forEach((val, key) => ddo[key] = val, target)
 
-  ddo.bindings = {}
   if (target.state) {
     for (let key in ddo.inputMap) {
       ddo.bindings[key] = '<'
     }
   } else {
-    ddo.bindings = inputsMap(ddo.inputMap)
+    ddo.bindings = Object.assign(ddo.bindings, inputsMap(ddo.inputMap))
   }
 
   // Component controllers must be created from a factory. Checkout out
