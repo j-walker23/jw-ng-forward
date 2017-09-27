@@ -7,7 +7,7 @@
 // of the selector as well as the type of selector it was (element, attribute, or
 // CSS class).
 import parseSelector from '../util/parse-selector'
-import { providerStore, componentStore, bundleStore } from '../writers'
+import { bundleStore, componentStore, providerStore } from '../writers'
 import { Providers } from './providers'
 import { Module } from '../classes/module'
 import { createConfigErrorMessage } from '../util/helpers'
@@ -23,16 +23,20 @@ import { directiveControllerFactory } from '../util/directive-controller'
 // parser defined in `../../util/decorate-directive.js`
 const TYPE = 'directive';
 
+export interface DirType {
+  selector: string,
+  providers?: any[],
+  directives?: any[],
+
+  [key: string]: any
+}
+
 // ## Decorator Definition
-export function Directive({
-  selector,
-  providers = []
-} :
-  {
-    selector: string,
-    providers?: any[]
-  }) {
-  return function (t: any) {
+export function Directive(obj: DirType) {
+
+  let { selector, providers = [] } = obj
+
+  return function(t: any) {
     // The only required config is a selector. If one wasn't passed, throw immediately
     if (!selector) {
       throw new Error('Directive selector must be provided');
@@ -56,6 +60,8 @@ export function Directive({
 
     // Restrict type must be 'element'
     componentStore.set('restrict', restrict, t);
+    let keys = Object.keys(obj).filter(k => ['selector', 'providers'].indexOf(k) < 0)
+    keys.forEach(k => componentStore.set(k, obj[k], t))
   }
 }
 
@@ -66,6 +72,8 @@ Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule
 
   // Loop through the key/val pairs of metadata and assign it to the DDO
   componentStore.forEach((val, key) => ddo[key] = val, target);
+  // if (name == 'uniqueInput')
+  //   console.log('ddo', ddo)
 
   // If the selector type was not an element, throw an error. Components can only
   // be elements in Angular 2, so we want to enforce that strictly here.
@@ -78,7 +86,7 @@ Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule
   ngModule.directive(name, ['$injector', ($injector: angular.auto.IInjectorService) => {
     // Component controllers must be created from a factory. Checkout out
     // util/directive-controller.js for more information about what's going on here
-    ddo.link = function ($scope: any, $element: any, $attrs: any, $requires: any, $transclude: any) {
+    ddo.link = function($scope: any, $element: any, $attrs: any, $requires: any, $transclude: any) {
       let locals = { $scope, $element, $attrs, $transclude, $requires };
       return directiveControllerFactory(this, injects, target, ddo, $injector, locals);
     };
