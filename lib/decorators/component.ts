@@ -66,7 +66,7 @@ export interface CompType {
   outputs?: string[],
   pipes?: any[],
   directives?: any[],
-
+  require?: any
   [key: string]: any
 }
 
@@ -102,7 +102,8 @@ export function Component({
                             inputs = [],
                             outputs = [],
                             pipes = [],
-                            directives = []
+                            directives = [],
+                            require = {},
                           }: CompType) {
   return function(t: any) {
     // The only required config is a selector. If one wasn't passed, throw immediately
@@ -133,6 +134,7 @@ export function Component({
     // Since components must have a template, set transclude to true
     componentStore.set('transclude', transclude, t);
     componentStore.set('bindings', bindings, t);
+    componentStore.set('require', require, t);
 
     // Inputs should always be bound to the controller instance, not
     // to the scope
@@ -252,7 +254,7 @@ Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule
   componentHooks._extendDDO.forEach(hook => hook(ddo, target, name, injects, ngModule))
 
   // Finally add the component to the raw module
-  // console.log('component', name, ddo)
+  // if (name.includes('question')) console.log('component', name, ddo)
   ngModule.component(name, ddo)
 
   componentHooks._after.forEach(hook => hook(target, name, injects, ngModule))
