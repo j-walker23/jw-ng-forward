@@ -8,8 +8,7 @@
     "skipLibCheck": true,
     "stripInternal": true,
     "target": "es5",
-    "module": "commonjs",
-    "declaration": false,
+    "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
     "outDir": "dist/",
@@ -24,9 +23,8 @@
     ]
   },
   "exclude": [
-    "dist/**/*",
     "**/*.spec.ts",
-    "webpack.config.dev.js",
+    "webpack.config.ts",
     "lib/tests/*",
     "node_modules"
   ]

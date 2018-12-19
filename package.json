@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "npx webpack --mode development -w",
-    "dev:w": "nodemon --watch webpack.config.ts --exec npm run dev",
+    "dev:w": "nodemon --watch tsconfig.json --watch webpack.config.ts --exec npm run dev",
     "build": "npx webpack -p --mode production",
     "build:dev": "npx webpack --mode development",
     "test": "karma start karma.conf.js"
@@ -52,6 +52,7 @@
     "@types/sinon-chai": "^3.2.2",
     "@types/webpack": "*",
     "angular-mocks": "^1.5.7",
+    "babel-loader": "^8.0.4",
     "chai": "^4.2.0",
     "clean-webpack-plugin": "^1.0.0",
     "core-js": "*",
