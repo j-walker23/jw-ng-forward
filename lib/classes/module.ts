@@ -1,4 +1,4 @@
-import * as angular from 'angular'
+import angular, { IModule } from 'angular'
 // # Module
 // A thin wrapper around `angular.module` for transforming annotated classes into
 // angular providers
@@ -18,7 +18,7 @@ let _parsers: any = {};
 // ## DecoratedModule class
 // Define the Module wrapper class.
 export class DecoratedModule {
-  private _module: angular.IModule;
+  private _module: IModule;
   private _dependencies: any[];
 
   constructor(public name: string, modules: any = false) {
@@ -79,7 +79,7 @@ export class DecoratedModule {
 
   // Dead code from angular-decorators that should probably be removed. Just returns
   // the raw angular.module.
-  publish(): angular.IModule {
+  publish(): IModule {
     return this._module;
   }
 

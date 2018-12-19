@@ -1,17 +1,32 @@
 {
-  "version": "1.6.0",
   "compilerOptions": {
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": false,
+    "stripInternal": true,
+    "target": "es5",
     "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
-    "noLib": false,
     "outDir": "dist/",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": ".",
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
   "exclude": [
+    "**/*.spec.ts",
+    "webpack.config.ts",
+    "lib/tests/*",
     "node_modules"
   ]
 }
+

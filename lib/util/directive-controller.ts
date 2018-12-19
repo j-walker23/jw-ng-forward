@@ -1,3 +1,5 @@
+import { IScope } from 'angular'
+import { componentHooks } from '../decorators/component'
 /* global Object */
 // # Directive Controller Factory
 // While we want to use the component controller, we need a way to add our own
@@ -9,7 +11,6 @@
 // We'll need a1atscript's inputsBuilder for generating the property definitions
 import { inputsBuilder } from '../properties/inputs-builder'
 import { outputsBuilder } from '../properties/outputs-builder'
-import { componentHooks } from '../decorators/component'
 // Also need the outputsBuilder for creating event emitters
 
 // ## Factory
@@ -39,7 +40,7 @@ export function directiveControllerFactory(caller: any, injects: string[], contr
 
   // Outputs work similarly, but they need the raw $element and the $scope for
   // destroying output observables.
-  let { $element, $scope } : { $element: JQuery, $scope: angular.IScope } = locals
+  let { $element, $scope }: {$element: JQuery, $scope: IScope} = locals
   outputsBuilder(instance, $element, $scope, ddo.outputMap || {})
 
   if (typeof instance.ngOnInit === 'function') {

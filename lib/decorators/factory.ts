@@ -1,3 +1,4 @@
+import { IModule } from 'angular'
 import { Providers } from './providers'
 import { providerStore } from '../writers'
 import { Module } from '../classes/module'
@@ -19,7 +20,7 @@ export function Factory(opts?: IFactoryDecorator) {
 }
 
 
-Module.addProvider(TYPE, (target: any, name: string, injects: string[], module: angular.IModule) => {
+Module.addProvider(TYPE, (target: any, name: string, injects: string[], module: IModule) => {
 
   module.factory(name, [...injects, target])
 

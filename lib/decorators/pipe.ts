@@ -1,3 +1,5 @@
+import { IModule } from 'angular'
+
 // # Pipe Decorator
 // While not even close to a complete polyfill of Angular 2 pipes, for pure
 // filter functions you can begin writing them using pipe-like syntax.
@@ -40,7 +42,7 @@ export interface Pipe {
 }
 
 // ## Provider Parser
-Module.addProvider(TYPE, (provider: any, name: string, injects: string[], ngModule: angular.IModule) => {
+Module.addProvider(TYPE, (provider: any, name: string, injects: string[], ngModule: IModule) => {
   // This provider recipe uses Angular 1 filters
   ngModule.filter(name, [...injects, (...dependencies: any[]) => {
     // First, create an instance of the provider by passing in injected dependencies

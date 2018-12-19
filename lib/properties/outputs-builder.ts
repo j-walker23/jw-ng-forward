@@ -1,3 +1,5 @@
+import { IAngularEvent, IScope } from 'angular'
+
 // # Outputs Builder
 // Takes an instance of a controller and detects event emitters. Subscribes
 // to the emitters to make event dispatching a breeze.
@@ -12,7 +14,7 @@ import CustomEvent from '../util/custom-event';
 // Takes an instance of the controller, element of the component for dispatching
 // the output, $scope for disposing of subscriptions, and a map of the emitters and
 // outputs that might be on the instance
-export function outputsBuilder(instance: any, element: any, $scope: angular.IScope, outputs: any){
+export function outputsBuilder(instance: any, element: any, $scope: IScope, outputs: any){
   // Collection of subscriptions we'll generate
   let subscriptions: any[] = [];
 
@@ -34,7 +36,7 @@ export function outputsBuilder(instance: any, element: any, $scope: angular.ISco
   }
 
   // Once the component's scope has been destroyed, tear down the subscriptions.
-  $scope.$on('$destroy', (event: angular.IAngularEvent) => {
+  $scope.$on('$destroy', (event: IAngularEvent) => {
     subscriptions.forEach(subscription => subscription.unsubscribe());
   });
 }

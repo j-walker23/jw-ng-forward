@@ -1,4 +1,5 @@
 var tsConfig = require('./tsconfig.json');
+var webpackConfig = require('./webpack.config')
 
 tsConfig.compilerOptions.target = 'es5';
 

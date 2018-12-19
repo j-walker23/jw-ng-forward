@@ -1,3 +1,4 @@
+import { IModule } from 'angular'
 import { bundleStore, providerStore } from '../writers';
 import {Module} from './module';
 import {Inject} from '../decorators/inject';
@@ -24,16 +25,16 @@ export class Provider {
   constructor(token: string|OpaqueToken|Function,
     {
       useClass,
-      useValue, 
-      useConstant, 
-      useFactory, 
+      useValue,
+      useConstant,
+      useFactory,
       deps
-    } : 
-    { 
-      useClass?: any, 
-      useValue?: any, 
-      useConstant?: any, 
-      useFactory?: any, 
+    } :
+    {
+      useClass?: any,
+      useValue?: any,
+      useConstant?: any,
+      useFactory?: any,
       deps?: any[]
     }
   ) {
@@ -60,12 +61,12 @@ export class Provider {
 
   get type(): string {
     if (this._type) return this._type;
-    
+
     this._type = Object.keys(this).find((k: string) : boolean => k.startsWith('use') && this[k] !== undefined);
-    
+
     return this._type;
   }
-  
+
   get dependencies(): string[]{
     return this._dependencies;
   }
@@ -73,7 +74,7 @@ export class Provider {
 
 
 // ## Provider Parser
-Module.addProvider(TYPE, (provider: Provider, name: string, injects: string[], ngModule: angular.IModule) => {
+Module.addProvider(TYPE, (provider: Provider, name: string, injects: string[], ngModule: IModule) => {
   switch (provider.type) {
     case 'useValue':
         ngModule.value(provider.token, provider.useValue);
@@ -101,16 +102,16 @@ Module.addProvider(TYPE, (provider: Provider, name: string, injects: string[], n
 export const provide = (token: string|OpaqueToken|Function,
     {
       useClass,
-      useValue, 
-      useConstant, 
-      useFactory, 
+      useValue,
+      useConstant,
+      useFactory,
       deps
-    } : 
-    { 
-      useClass?: any, 
-      useValue?: any, 
-      useConstant?: any, 
-      useFactory?: any, 
+    } :
+    {
+      useClass?: any,
+      useValue?: any,
+      useConstant?: any,
+      useFactory?: any,
       deps?: any[]
     }
   ) : Provider => {

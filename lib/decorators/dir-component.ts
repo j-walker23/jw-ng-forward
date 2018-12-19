@@ -1,3 +1,4 @@
+import { IModule } from 'angular'
 import parseSelector from '../util/parse-selector'
 import { providerStore, componentStore, bundleStore } from '../writers'
 import { Providers } from './providers'
@@ -115,7 +116,7 @@ export function DirComp({
   }
 }
 
-Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule: angular.IModule) => {
+Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule: IModule) => {
   // First create an empty object to contain the directive definition object
   let ddo: any = {};
 

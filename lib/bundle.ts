@@ -1,6 +1,7 @@
 // # Bundle function
 // Takes a root decorated class and generates a Module from it
 
+import { IModule } from 'angular'
 // ## Setup
 // All information about traversing a provider is written by the appWriter
 import { bundleStore } from './writers'
@@ -38,7 +39,7 @@ export function bundle(moduleName: string, provider: any, otherProviders: any[] 
   let providers = new Set<any>();
   // Create a new set of `angular.module`s based on the modules required by the
   // root provider
-  let modules = new Set<angular.IModule>(startingModules);
+  let modules = new Set<IModule>(startingModules);
 
   // Recursive parsing function. Takes a provider and adds modules to the modules
   // set. Then traverses the providers it depends on.

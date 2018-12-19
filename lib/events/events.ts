@@ -1,3 +1,4 @@
+import { IParseService, IScope } from 'angular'
 import { Directive } from '../decorators/directive'
 import { Inject } from '../decorators/inject'
 import parseSelector from '../util/parse-selector'
@@ -47,7 +48,7 @@ function resolve(): any[] {
     class EventHandler {
       public expression: any;
 
-      constructor($parse: angular.IParseService, public $element: JQuery, $attrs: angular.IAttributes, public $scope: angular.IScope) {
+      constructor($parse: IParseService, public $element: JQuery, $attrs: angular.IAttributes, public $scope: IScope) {
         let { name: attrName } = parseSelector(selector);
         this.expression = $parse($attrs[attrName]);
         $element.on(event, e => this.eventHandler(e));

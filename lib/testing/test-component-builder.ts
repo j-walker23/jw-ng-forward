@@ -1,16 +1,15 @@
-import * as angular from 'angular'
-import bundle from '../bundle';
-import { Providers } from '../decorators/providers';
-import { providers, allProviders, clearProviders } from './providers';
-import { bundleStore, componentStore } from '../writers';
+import angular, { IScope } from 'angular'
+import { bundle } from '../bundle'
+import { DecoratedModule } from '../classes/module'
 import { View } from '../decorators/component'
-import {INgForwardJQuery} from "../util/jqlite-extensions";
-import IInjectorService = angular.auto.IInjectorService;
-import {DecoratedModule} from "../classes/module";
+import { INgForwardJQuery } from '../util/jqlite-extensions'
+import { bundleStore, componentStore } from '../writers'
+import { allProviders, clearProviders } from './providers'
+import IInjectorService = angular.auto.IInjectorService
 
 export interface ngClass {
-  new (...any): any;
-  name?:string;
+  new(...any): any;
+  name?: string;
 }
 
 /**
@@ -29,16 +28,16 @@ export class TestComponentBuilder {
    * @returns {ComponentFixture}
    */
   private create(rootComponent: ngClass): ComponentFixture {
-    let decoratedModule: DecoratedModule = bundle('test.module', rootComponent);
-    angular.mock.module(decoratedModule.name);
+    let decoratedModule: DecoratedModule = bundle('test.module', rootComponent)
+    angular.mock.module(decoratedModule.name)
     angular.mock.module($provide =>
-    // todo: support all providers, not just useValue ones
-        allProviders().forEach(({token, useValue}) =>
-            $provide.value(token, useValue)));
+      // todo: support all providers, not just useValue ones
+      allProviders().forEach(({ token, useValue }) =>
+        $provide.value(token, useValue)))
 
-    let fixture: ComponentFixture = compileComponent(rootComponent);
-    clearProviders();
-    return fixture;
+    let fixture: ComponentFixture = compileComponent(rootComponent)
+    clearProviders()
+    return fixture
   }
 
   /**
@@ -49,20 +48,20 @@ export class TestComponentBuilder {
    *
    * @param rootComponent
    * @returns {Promise<ComponentFixture>}
-     */
+   */
   createAsync(rootComponent: ngClass): Promise<ComponentFixture> {
-    let fixture: ComponentFixture = this.create(rootComponent);
-    return Promise.resolve(fixture);
+    let fixture: ComponentFixture = this.create(rootComponent)
+    return Promise.resolve(fixture)
   }
 
   overrideTemplate(component: ngClass, template: string): TestComponentBuilder {
-    componentStore.set('template', template, component);
-    return this;
+    componentStore.set('template', template, component)
+    return this
   }
 
-  overrideProviders(component: ngClass, providers: (ngClass|string)[]): TestComponentBuilder {
-    bundleStore.set('providers', providers, component);
-    return this;
+  overrideProviders(component: ngClass, providers: (ngClass | string)[]): TestComponentBuilder {
+    bundleStore.set('providers', providers, component)
+    return this
   }
 
   overrideView(component: ngClass, config: {
@@ -71,13 +70,15 @@ export class TestComponentBuilder {
     pipes?: any[],
     directives?: ngClass[]
   }): TestComponentBuilder {
-    View(config)(component);
-    return this;
+    View(config)(component)
+    return this
   }
 
-  overrideDirective()     { throw new Error('Method not supported in ng-forward.'); }
-  overrideViewBindings()  { throw new Error('Method not supported in ng-forward.'); }
+  overrideDirective() { throw new Error('Method not supported in ng-forward.') }
+
+  overrideViewBindings() { throw new Error('Method not supported in ng-forward.') }
 }
+
 
 
 /**
@@ -87,34 +88,34 @@ export class TestComponentBuilder {
  * method that triggers a digest.
  */
 export class ComponentFixture {
-  public debugElement: INgForwardJQuery;
-  public componentInstance: any;
-  public nativeElement: any;
-  private rootTestScope: angular.IScope;
+  public debugElement: INgForwardJQuery
+  public componentInstance: any
+  public nativeElement: any
+  private rootTestScope: IScope
 
   constructor({
-        debugElement,
-        rootTestScope,
-        $injector
-      } :
-      {
-        debugElement:INgForwardJQuery,
-        rootTestScope: angular.IScope,
-        $injector: IInjectorService
-      }) {
-    this.debugElement = debugElement;
-    this.debugElement.data('$injector', $injector);
-    this.componentInstance = debugElement.componentInstance;
-    this.nativeElement = debugElement.nativeElement;
+                debugElement,
+                rootTestScope,
+                $injector,
+              }:
+                {
+                  debugElement: INgForwardJQuery,
+                  rootTestScope: IScope,
+                  $injector: IInjectorService
+                }) {
+    this.debugElement = debugElement
+    this.debugElement.data('$injector', $injector)
+    this.componentInstance = debugElement.componentInstance
+    this.nativeElement = debugElement.nativeElement
 
-    this.rootTestScope = rootTestScope;
+    this.rootTestScope = rootTestScope
   }
 
   /**
    * Triggers a root test scope digest.
    */
   detectChanges(): void {
-    this.rootTestScope.$digest();
+    this.rootTestScope.$digest()
   }
 }
 
@@ -125,25 +126,25 @@ export class ComponentFixture {
  * @param ComponentClass
  * @returns {ComponentFixture}
  */
-export function compileComponent(ComponentClass:ngClass): ComponentFixture {
+export function compileComponent(ComponentClass: ngClass): ComponentFixture {
 
   let selector: string = bundleStore.get('selector', ComponentClass),
-      rootTestScope: angular.IScope,
-      debugElement: INgForwardJQuery,
-      componentInstance: any,
-      $injector: IInjectorService;
+    rootTestScope: IScope,
+    debugElement: INgForwardJQuery,
+    componentInstance: any,
+    $injector: IInjectorService
 
   inject(($compile, $rootScope, _$injector_) => {
-    let controllerAs = componentStore.get('controllerAs', ComponentClass);
-    componentInstance = new ComponentClass();
-    rootTestScope = $rootScope.$new();
-    debugElement = angular.element(`<${selector}></${selector}>`);
-    debugElement = $compile(debugElement)(rootTestScope);
-    rootTestScope.$digest();
-    $injector = _$injector_;
-  });
+    let controllerAs = componentStore.get('controllerAs', ComponentClass)
+    componentInstance = new ComponentClass()
+    rootTestScope = $rootScope.$new()
+    debugElement = angular.element(`<${selector}></${selector}>`) as INgForwardJQuery
+    debugElement = $compile(debugElement)(rootTestScope)
+    rootTestScope.$digest()
+    $injector = _$injector_
+  })
 
-  return new ComponentFixture({debugElement, rootTestScope, $injector});
+  return new ComponentFixture({ debugElement, rootTestScope, $injector })
 }
 
 
@@ -159,19 +160,19 @@ export function compileComponent(ComponentClass:ngClass): ComponentFixture {
  * @param selector
  * @returns {{parentScope: *, element: *, controller: *, isolateScope: *}}
  */
-export function compileHtmlAndScope({html, initialScope, selector}){
+export function compileHtmlAndScope({ html, initialScope, selector }) {
 
-  let parentScope, element, controller, isolateScope;
+  let parentScope, element, controller, isolateScope
 
   inject(($compile, $rootScope) => {
-    parentScope = $rootScope.$new();
-    Object.assign(parentScope, initialScope);
-    element = angular.element(html);
-    element = $compile(element)(parentScope);
-    parentScope.$digest();
-    isolateScope = element.isolateScope();
-    controller = element.controller(`${selector}`);
-  });
+    parentScope = $rootScope.$new()
+    Object.assign(parentScope, initialScope)
+    element = angular.element(html)
+    element = $compile(element)(parentScope)
+    parentScope.$digest()
+    isolateScope = element.isolateScope()
+    controller = element.controller(`${selector}`)
+  })
 
-  return {parentScope, element, controller, isolateScope};
+  return { parentScope, element, controller, isolateScope }
 }

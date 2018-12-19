@@ -1,16 +1,16 @@
-import { bundleStore, componentStore, providerStore } from '../writers'
-import { Providers } from './providers'
-import { componentHooks } from './component'
+import { Ng1ViewDeclaration } from '@uirouter/angularjs'
+import { IModule } from 'angular'
 import { createConfigErrorMessage, flatten } from '../util/helpers'
-import IState = angular.ui.IState
+import { bundleStore, componentStore, providerStore } from '../writers'
+import { componentHooks } from './component'
+import { Providers } from './providers'
 
-const configsKey = 'ui-router.stateConfigs'
 const childConfigsKey = 'ui-router.stateChildConfigs'
 const annotatedResolvesKey = 'ui-router.annotatedResolves'
 const resolvedMapKey = 'ui-router.resolvedMap'
 
 
-export interface IComponentState extends IState {
+export interface IComponentState extends Ng1ViewDeclaration {
   component: any;
 }
 
@@ -33,7 +33,7 @@ export function StateConfig(stateConfigs: IComponentState[]) {
 
     // Add all routed components as providers to this parent component so they are included in the bundle
     Providers(...flatten(stateConfigs.map(sc => sc.component)))(t, `while analyzing StateConfig '${t.name}' state components`)
-    componentStore.set(childConfigsKey, stateConfigs, t);
+    componentStore.set(childConfigsKey, stateConfigs, t)
   }
 }
 
@@ -85,7 +85,7 @@ componentHooks.extendDDO((ddo: any) => {
   }
 })
 
-componentHooks.after((target: any, name: string, injects: string[], ngModule: angular.IModule) => {
+componentHooks.after((target: any, name: string, injects: string[], ngModule: IModule) => {
   const childStateConfigs: IComponentState[] = componentStore.get(childConfigsKey, target)
 
   if (childStateConfigs) {

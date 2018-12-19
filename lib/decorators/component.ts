@@ -1,3 +1,8 @@
+import { IModule } from 'angular'
+import { Module } from '../classes/module'
+import { events } from '../events/events'
+import { inputsMap } from '../properties/inputs-builder'
+import { directiveControllerFactory } from '../util/directive-controller'
 // # Component Decorator
 // Provides a robust component decorator that attempts to polyfill many Angular 2
 // features while still providing an excellent, testable Angular 1 component strategy
@@ -40,12 +45,8 @@
 // CSS class).
 import parseSelector from '../util/parse-selector'
 import { bundleStore, componentStore, providerStore } from '../writers'
-import { Providers } from './providers'
-import { Module } from '../classes/module'
 import { writeMapMulti } from './input-output'
-import { inputsMap } from '../properties/inputs-builder'
-import { events } from '../events/events'
-import { directiveControllerFactory } from '../util/directive-controller'
+import { Providers } from './providers'
 // `providerStore` sets up provider information, `componentStore` writes the DDO,
 // and `appWriter` sets up app traversal/bootstrapping information.
 // Takes the information from `config.providers` and turns it into the actual metadata
@@ -76,10 +77,10 @@ export const componentHooks = {
   _beforeCtrlInvoke: [],
   _afterCtrlInvoke: [],
 
-  after(fn: (target: any, name: string, injects: string[], ngModule: angular.IModule) => any) {
+  after(fn: (target: any, name: string, injects: string[], ngModule: IModule) => any) {
     this._after.push(fn)
   },
-  extendDDO(fn: (ddo: any, target: any, name: string, injects: string[], ngModule: angular.IModule) => any) {
+  extendDDO(fn: (ddo: any, target: any, name: string, injects: string[], ngModule: IModule) => any) {
     this._extendDDO.push(fn)
   },
   beforeCtrlInvoke(fn: (caller: any, injects: string[], controller: any, ddo: any, $injector: any, locals: any) => any) {
@@ -87,7 +88,7 @@ export const componentHooks = {
   },
   afterCtrlInvoke(fn: (caller: any, injects: string[], controller: any, ddo: any, $injector: any, locals: any) => any) {
     this._afterCtrlInvoke.push(fn)
-  }
+  },
 }
 
 // ## Decorator Definition
@@ -132,8 +133,8 @@ export function Component({
     // componentStore.set('scope', {}, t)
 
     // Since components must have a template, set transclude to true
-    componentStore.set('transclude', transclude, t);
-    componentStore.set('bindings', bindings, t);
+    componentStore.set('transclude', transclude, t)
+    componentStore.set('bindings', bindings, t)
     componentStore.set('require', require, t);
 
     // Inputs should always be bound to the controller instance, not
@@ -145,7 +146,7 @@ export function Component({
       ['inputs', inputs],
       ['providers', providers],
       ['directives', directives],
-      ['outputs', outputs]
+      ['outputs', outputs],
     ].forEach(([propName, propVal]) => {
       if (propVal !== undefined && !Array.isArray(propVal)) {
         throw new TypeError(`Component Decorator Error in "${t.name}": Component ${propName} must be an array`)
@@ -186,7 +187,7 @@ export function Component({
       template,
       templateUrl,
       pipes,
-      directives
+      directives,
     })(t)
   }
 }
@@ -196,9 +197,9 @@ export function View({
                        template,
                        templateUrl,
                        pipes = [],
-                       directives = []
+                       directives = [],
                      }: {
-  selector: string,
+  selector?: string,
   template?: string,
   templateUrl?: string,
   pipes?: any[],
@@ -220,7 +221,7 @@ export function View({
   }
 }
 
-Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule: angular.IModule) => {
+Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule: IModule) => {
   // First create an empty object to contain the directive definition object
   let ddo: any = {}
 

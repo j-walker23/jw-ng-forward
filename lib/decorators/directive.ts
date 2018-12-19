@@ -1,3 +1,5 @@
+import { IModule } from 'angular'
+
 // # Directive Decorator
 //
 // ## Usage
@@ -66,7 +68,7 @@ export function Directive(obj: DirType) {
 }
 
 // ## Component Provider Parser
-Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule: angular.IModule) => {
+Module.addProvider(TYPE, (target: any, name: string, injects: string[], ngModule: IModule) => {
   // First create an empty object to contain the directive definition object
   let ddo: any = {};
 

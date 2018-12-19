@@ -1,3 +1,4 @@
+import { IModule } from 'angular'
 import { providerStore } from '../writers'
 import { Module } from '../classes/module'
 import { Providers } from './providers'
@@ -18,7 +19,7 @@ export function Config(opts: IConfigDecorator = {}) {
 }
 
 
-Module.addProvider(TYPE, (target: any, name: string, injects: string[], module: angular.IModule) => {
+Module.addProvider(TYPE, (target: any, name: string, injects: string[], module: IModule) => {
 
   module.config([...injects, target.factory])
 
@@ -34,6 +35,6 @@ export function Run(opts: IConfigDecorator = {}) {
   }
 }
 
-Module.addProvider('run', (target: any, name: string, injects: string[], module: angular.IModule) => {
+Module.addProvider('run', (target: any, name: string, injects: string[], module: IModule) => {
   module.run([...injects, target.factory])
 });
