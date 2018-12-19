@@ -18,8 +18,8 @@ let _parsers: any = {};
 // ## DecoratedModule class
 // Define the Module wrapper class.
 export class DecoratedModule {
-  private _module: IModule;
-  private _dependencies: any[];
+  _module: IModule;
+  _dependencies: any[];
 
   constructor(public name: string, modules: any = false) {
     // `angular.module` works either by creating a new module via an array

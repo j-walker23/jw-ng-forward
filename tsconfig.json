@@ -5,10 +5,11 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "stripInternal": true,
     "target": "es5",
-    "declaration": true,
+    "module": "commonjs",
+    "declaration": false,
     "noImplicitAny": false,
     "removeComments": true,
     "outDir": "dist/",
@@ -23,10 +24,12 @@
     ]
   },
   "exclude": [
+    "dist/**/*",
     "**/*.spec.ts",
-    "webpack.config.ts",
+    "webpack.config.dev.js",
     "lib/tests/*",
     "node_modules"
   ]
 }
+
 

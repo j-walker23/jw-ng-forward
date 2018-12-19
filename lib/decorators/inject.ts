@@ -21,7 +21,7 @@ import { componentHooks } from './component'
 
 // ## @Inject
 // Takes an array of injects
-export function Inject(...injects: any[]) {
+export function Inject(...injects: any[]): any {
   return function(t1: any, name?: string, { value: t2 } = { value: undefined }) {
 
     // We can use @Inject on classes and--in the case of ui-router @Resolve decorator--static methods.

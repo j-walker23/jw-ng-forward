@@ -1,4 +1,4 @@
-import { Ng1ViewDeclaration } from '@uirouter/angularjs'
+import { Ng1StateDeclaration } from '@uirouter/angularjs'
 import { IModule } from 'angular'
 import { createConfigErrorMessage, flatten } from '../util/helpers'
 import { bundleStore, componentStore, providerStore } from '../writers'
@@ -10,7 +10,7 @@ const annotatedResolvesKey = 'ui-router.annotatedResolves'
 const resolvedMapKey = 'ui-router.resolvedMap'
 
 
-export interface IComponentState extends Ng1ViewDeclaration {
+export interface IComponentState extends Ng1StateDeclaration {
   component: any;
 }
 
@@ -68,7 +68,7 @@ function targetIsStaticFn(t) {
  * ])
  * class App {}
  */
-export function Resolve(resolveName: string = null) {
+export function Resolve(resolveName: string = null): any {
   return function(target: any, resolveFnName: string, { value: resolveFn }) {
     if (!targetIsStaticFn(target)) {
       throw new Error('@Resolve target must be a static method.')

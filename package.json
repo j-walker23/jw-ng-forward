@@ -11,8 +11,9 @@
   "scripts": {
     "dev": "npx webpack --mode development -w",
     "dev:w": "nodemon --watch webpack.config.ts --exec npm run dev",
-    "build": "npx webpack -p",
-    "build:dev": "npx webpack --mode development"
+    "build": "npx webpack -p --mode production",
+    "build:dev": "npx webpack --mode development",
+    "test": "karma start karma.conf.js"
   },
   "keywords": [
     "angular",
@@ -55,8 +56,10 @@
     "clean-webpack-plugin": "^1.0.0",
     "core-js": "*",
     "karma": "^3.1.4",
+    "karma-angular": "^0.0.6",
     "karma-chai": "^0.1.0",
     "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.5",
     "karma-phantomjs-launcher": "^1.0.4",
     "karma-sinon": "^1.0.5",
     "karma-webpack": "^3.0.5",
@@ -64,11 +67,13 @@
     "nodemon": "^1.18.9",
     "phantomjs-prebuilt": "^2.1.16",
     "sinon": "^7.2.2",
+    "sinon-chai": "^3.3.0",
     "ts-loader": "^5.3.1",
     "ts-node": "^7.0.1",
     "tsconfig-paths-webpack-plugin": "^3.2.0",
     "typescript": "*",
     "webpack": "^4.27.0",
-    "webpack-cli": "^3.1.2"
+    "webpack-cli": "^3.1.2",
+    "yargs": "^12.0.5"
   }
 }

@@ -58,7 +58,7 @@ const TYPE = 'component'
 export interface CompType {
   selector: string,
   controllerAs?: string,
-  template?: string,
+  template?: any,
   templateUrl?: string,
   bindings?: any,
   transclude?: any,

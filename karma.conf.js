@@ -1,47 +1,35 @@
-var tsConfig = require('./tsconfig.json');
-var webpackConfig = require('./webpack.config')
+let webpackConfig = require('./webpack.config')
 
-tsConfig.compilerOptions.target = 'es5';
+module.exports = function (config) {
+  let options = {
+    basePath: '',
+    frameworks: ['angular', 'mocha', 'chai', 'sinon'],
+    angular: ['mocks'],
 
-module.exports = function(config){
-	var options = {
-		basePath: 'dist',
-		browsers: ['Chrome'],
-		frameworks: ['angular', 'mocha', 'browserify'],
-		reporters: ['mocha'],
-		angular: ['mocks'],
+    files: [
+      { pattern: 'lib/**/*.spec.ts', watched: false },
+    ],
 
-		files: [
-			require.resolve('babel-core/browser-polyfill'),
-			'../node_modules/reflect-metadata/Reflect.js',
-			'lib/**/*.spec.js'
-		],
+    preprocessors: {
+      'lib/**/*.ts': ['webpack'],
+    },
 
-		preprocessors: {
-			'lib/**/*.js': ['browserify']
-		},
+    webpack: {
+      mode: null,
+      module: webpackConfig.module,
+      resolve: webpackConfig.resolve,
+    },
 
-		browserify: {
-			watch: true,
-			noParse: [
-				// require.resolve('sinon-chai')
-			],
-			transform: [
-				['babelify', { stage: 0 }]
-			]
-		},
+    webpackMiddleware: {
+      logLevel: 'error',
+    },
 
-		customLaunchers: {
-			Chrome_travis_ci: {
-				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
-		}
-	};
-
-	if(process.env.TRAVIS){
-		options.browsers = ['Chrome_travis_ci'];
-	}
-
-	config.set(options);
+    reporters: ['progress'],
+    colors: true,
+    autoWatch: true,
+    browsers: ['PhantomJS'],
+    singleRun: true,
+    concurrency: Infinity,
+  };
+  config.set(options);
 };
