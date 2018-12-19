@@ -29,10 +29,6 @@ import { directiveControllerFactory } from '../util/directive-controller'
 // 		this.Messenger = Messenger;
 // 		this.message = '';
 // 	}
-// 	async send(){
-// 		let message = await this.Messenger.create(this.subject, this.message);
-// 		this.sent.emit(message);
-// 	}
 // }
 //```
 // In your HTML:

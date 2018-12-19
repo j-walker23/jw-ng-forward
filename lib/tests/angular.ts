@@ -20,11 +20,11 @@ export let ng = {
 	module: sinon.stub().returns(ngMocks),
 	useStub() {
 		//noinspection TypeScriptUnresolvedVariable
-		global.angular = this;
+		global['angular'] = this;
 	},
 	useReal() {
 		//noinspection TypeScriptUnresolvedVariable
-		return global.angular = realAngular;
+		return global['angular'] = realAngular;
 	}
 };
 

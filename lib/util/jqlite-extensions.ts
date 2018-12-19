@@ -1,4 +1,5 @@
-import angular, { IAugmentedJQuery, IAugmentedJQueryStatic } from 'angular'
+import { IAugmentedJQuery, IAugmentedJQueryStatic } from 'angular'
+import * as angular from 'angular'
 import { ngClass } from '../testing/test-component-builder'
 import { bundleStore } from '../writers'
 import { getInjectableName } from './get-injectable-name'

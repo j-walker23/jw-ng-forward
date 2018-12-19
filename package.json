@@ -9,11 +9,19 @@
     "url": "https://github.com/j-walker23/ng-forward"
   },
   "scripts": {
-    "dev": "npx webpack --mode development -w",
+    "shit": "rm -rf dist",
+    "dev:a": "npm run shit && babel lib --out-dir dist --extensions '.ts' --ignore 'lib/**/*.spec.ts'",
+    "dev:b": "nodemon --watch babel.config.js --exec npm run dev:a",
     "dev:w": "nodemon --watch tsconfig.json --watch webpack.config.ts --exec npm run dev",
-    "build": "npx webpack -p --mode production",
     "build:dev": "npx webpack --mode development",
-    "test": "karma start karma.conf.js"
+    "test": "karma start karma.conf.js",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build:old": "npm run shit && npm run build:types && npm run build:js",
+    "build": "npm run shit && tsc",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel lib --out-dir dist --source-maps --extensions '.ts' --ignore 'lib/tests/*' --ignore 'lib/**/*.spec.ts'",
+    "dev": "nodemon --watch babel.config.js --watch lib --exec npm run build:js"
   },
   "keywords": [
     "angular",
@@ -41,8 +49,14 @@
     "rxjs": "^5.0.0-beta.12"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.0",
     "@babel/core": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-proposal-decorators": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-typescript": "^7.1.0",
     "@types/angular": "*",
     "@types/angular-mocks": "*",
     "@types/chai": "^4.1.7",

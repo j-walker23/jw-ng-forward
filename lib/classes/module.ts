@@ -1,4 +1,5 @@
-import angular, { IModule } from 'angular'
+import * as angular from 'angular'
+import { IModule } from 'angular'
 // # Module
 // A thin wrapper around `angular.module` for transforming annotated classes into
 // angular providers
@@ -13,26 +14,26 @@ import angular, { IModule } from 'angular'
 import { bundleStore, providerStore } from '../writers'
 
 // A very simple map holding the parsers for each provider. More on this later.
-let _parsers: any = {};
+let _parsers: any = {}
 
 // ## DecoratedModule class
 // Define the Module wrapper class.
 export class DecoratedModule {
-  _module: IModule;
-  _dependencies: any[];
+  _module: IModule
+  _dependencies: any[]
 
   constructor(public name: string, modules: any = false) {
     // `angular.module` works either by creating a new module via an array
     // of dependencies or by reference without the dependencies array
     if (modules) {
       // parse the module list to create an array of just strings
-      this.moduleList(modules);
+      this.moduleList(modules)
       // Create the angular module.
-      this._module = angular.module(name, this._dependencies);
+      this._module = angular.module(name, this._dependencies)
     }
     else {
       // If no dependencies were passed, access the module by reference
-      this._module = angular.module(name);
+      this._module = angular.module(name)
     }
   }
 
@@ -41,52 +42,52 @@ export class DecoratedModule {
     // We used a rest parameter so that you can add multiple providers at once.
     // So we must iterate over our array of providers.
 
-    const providersInferred = providers.filter(p => !p.isProvider);
-    const providersProper = providers.filter(p => p.isProvider);
+    const providersInferred = providers.filter(p => !p.isProvider)
+    const providersProper = providers.filter(p => p.isProvider)
 
     const handleProvider = provider => {
       // The providerStore contains the type of provider the class will be transformed
       // into as well as the name of the eventual provider. If this information has
       // not been set on the class, then we aren't dealing with a decorated class.
       if (!providerStore.has('type', provider)) {
-        throw new Error(`Cannot read provider metadata. Are you adding a class that hasn't been decorated yet?`);
+        throw new Error(`Cannot read provider metadata. Are you adding a class that hasn't been decorated yet?`)
       }
 
       // Grab the type of provider
-      let type = providerStore.get('type', provider);
+      let type = providerStore.get('type', provider)
       // ...and the name of the provider
-      let name = providerStore.get('name', provider);
+      let name = providerStore.get('name', provider)
       // This is the injection array used by angular's `$injector.invoke`. This array
       // is just a list of strings that will be injected
-      let inject = bundleStore.get('$inject', provider) || [];
+      let inject = bundleStore.get('$inject', provider) || []
 
       // We use the provider type to determine which parser will handle the class
       if (_parsers[type]) {
         // Execute the parser passing the class, name of the provider, injection
         // array, and the raw `angular.module` we defined in the constructor.
-        _parsers[type](provider, name, inject, this._module);
+        _parsers[type](provider, name, inject, this._module)
       }
       else {
-        throw new Error(`No parser registered for type '${type}'`);
+        throw new Error(`No parser registered for type '${type}'`)
       }
-    };
+    }
 
-    providersInferred.forEach(handleProvider);
-    providersProper.forEach(handleProvider);
+    providersInferred.forEach(handleProvider)
+    providersProper.forEach(handleProvider)
 
-    return this;
+    return this
   }
 
   // Dead code from angular-decorators that should probably be removed. Just returns
   // the raw angular.module.
   publish(): IModule {
-    return this._module;
+    return this._module
   }
 
   // Parses the array of modules
   moduleList(modules: any[]) {
     // Setup the dependency array
-    this._dependencies = [];
+    this._dependencies = []
 
     if (modules && modules.length !== 0) {
       // Iterate over the modules. Would be better done via `modules.map`, but
@@ -95,16 +96,16 @@ export class DecoratedModule {
         // If the module is a string (i.e. 'ui-router' or 'ngAria') then we are
         // already set
         if (typeof modules[i] === 'string') {
-          this._dependencies.push(modules[i]);
+          this._dependencies.push(modules[i])
         }
         // If it isn't a string but has a name then use the name instead. Raw
         // `angular.module`s provide the name here as does our reimplementation.
         else if (modules[i] && modules[i].name) {
-          this._dependencies.push(modules[i].name);
+          this._dependencies.push(modules[i].name)
         }
         // If neither case was met, throw an error
         else {
-          throw new Error(`Cannot read module: Unknown module in ${this.name}`);
+          throw new Error(`Cannot read module: Unknown module in ${this.name}`)
         }
       }
     }
@@ -112,48 +113,48 @@ export class DecoratedModule {
 
   // Alias over the raw config function
   config(configFunc: any): DecoratedModule {
-    this._module.config(configFunc);
+    this._module.config(configFunc)
 
-    return this;
+    return this
   }
 
   // Alias over the raw run function
   run(runFunc: any): DecoratedModule {
-    this._module.run(runFunc);
+    this._module.run(runFunc)
 
-    return this;
+    return this
   }
 
   // Alias for the value provider
   value(name: string, value: any): DecoratedModule {
-    this._module.value(name, value);
+    this._module.value(name, value)
 
-    return this;
+    return this
   }
 
   // Alias for the constant provider
   constant(name: string, value: any): DecoratedModule {
-    this._module.constant(name, value);
+    this._module.constant(name, value)
 
-    return this;
+    return this
   }
 }
 
 // Becuase I determined `export default new Module` to be too long, wrap the
 // `DecoratedModule` class in a simple factory function.
-export let Module: any = function (name: string, modules?: any): DecoratedModule {
-  return new DecoratedModule(name, modules);
-};
+export let Module: any = function(name: string, modules?: any): DecoratedModule {
+  return new DecoratedModule(name, modules)
+}
 
 // A static function for adding new parsers. You pass it a type like 'factory' and
 // a parsing function. This parsing function is what is called in the `DecoratedModule.add`
 // function
-Module.addProvider = function (providerType: string, parser: any) {
-  _parsers[providerType] = parser;
-};
+Module.addProvider = function(providerType: string, parser: any) {
+  _parsers[providerType] = parser
+}
 
 // Retrieve a parser. Only useful for tests and checking if a parser has already been
 // set
-Module.getParser = function (providerType: string): any {
-  return _parsers[providerType];
-};
+Module.getParser = function(providerType: string): any {
+  return _parsers[providerType]
+}

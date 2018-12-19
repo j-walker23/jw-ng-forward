@@ -1,16 +1,17 @@
-import angular, { IScope } from 'angular'
+import * as angular from 'angular'
+import { auto, IScope } from 'angular'
 import { bundle } from '../bundle'
 import { DecoratedModule } from '../classes/module'
 import { View } from '../decorators/component'
 import { INgForwardJQuery } from '../util/jqlite-extensions'
 import { bundleStore, componentStore } from '../writers'
 import { allProviders, clearProviders } from './providers'
-import IInjectorService = angular.auto.IInjectorService
 
 export interface ngClass {
   new(...any): any;
   name?: string;
 }
+
 
 /**
  * TestComponentBuilder
@@ -27,7 +28,7 @@ export class TestComponentBuilder {
    * @param rootComponent
    * @returns {ComponentFixture}
    */
-  private create(rootComponent: ngClass): ComponentFixture {
+  create(rootComponent: ngClass): ComponentFixture {
     let decoratedModule: DecoratedModule = bundle('test.module', rootComponent)
     angular.mock.module(decoratedModule.name)
     angular.mock.module($provide =>
@@ -80,7 +81,6 @@ export class TestComponentBuilder {
 }
 
 
-
 /**
  * ComponentFixture is what is returned from a TestComponentBuilder.create call.
  * It gives access to the root test debug element, which in turn gives access to
@@ -101,7 +101,7 @@ export class ComponentFixture {
                 {
                   debugElement: INgForwardJQuery,
                   rootTestScope: IScope,
-                  $injector: IInjectorService
+                  $injector: auto.IInjectorService
                 }) {
     this.debugElement = debugElement
     this.debugElement.data('$injector', $injector)
@@ -132,7 +132,7 @@ export function compileComponent(ComponentClass: ngClass): ComponentFixture {
     rootTestScope: IScope,
     debugElement: INgForwardJQuery,
     componentInstance: any,
-    $injector: IInjectorService
+    $injector: auto.IInjectorService
 
   inject(($compile, $rootScope, _$injector_) => {
     let controllerAs = componentStore.get('controllerAs', ComponentClass)

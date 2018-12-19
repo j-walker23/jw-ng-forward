@@ -30,7 +30,7 @@
 //
 // ## Intro
 // We'll need the bundle function to create our bundle from the root component
-import angular from 'angular'
+import * as angular from 'angular'
 import { bundle } from './bundle';
 // We'll need the appWriter to get the selector metadata off of the root component
 import {bundleStore} from './writers';
