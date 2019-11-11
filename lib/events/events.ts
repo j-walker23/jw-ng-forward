@@ -60,9 +60,12 @@ function resolve(): any[] {
           $event = $event.detail._output;
         }
 
-        if ($event.originalEvent && $event.originalEvent.detail && $event.originalEvent.detail._output) {
+        if ($event && $event.originalEvent && $event.originalEvent.detail && $event.originalEvent.detail._output) {
           $event = $event.detail._output;
         }
+
+        if ($event && $event.originalEvent && $event.originalEvent.detail)
+          $event = $event.originalEvent.detail._output
 
         this.expression(this.$scope, { $event });
         this.$scope.$applyAsync();

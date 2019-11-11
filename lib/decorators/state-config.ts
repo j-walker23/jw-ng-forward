@@ -8,10 +8,12 @@ import { Providers } from './providers'
 const childConfigsKey = 'ui-router.stateChildConfigs'
 const annotatedResolvesKey = 'ui-router.annotatedResolves'
 const resolvedMapKey = 'ui-router.resolvedMap'
+const hooksKey = 'ui-router.hooks'
 
 
 export interface IComponentState extends Ng1StateDeclaration {
   component: any;
+  redirectTo?: any;
 }
 
 /**
@@ -78,12 +80,21 @@ export function Resolve(resolveName: string = null): any {
   }
 }
 
+export function Hook(): any {
+  return function(target: any, name: string, { value: fn }) {
+    if (!targetIsStaticFn(target)) throw new Error('@Enter target must be a static method.')
+    componentStore.merge(hooksKey, { [name]: fn }, target)
+  }
+}
+
+
 componentHooks.extendDDO((ddo: any) => {
   if (ddo.template && ddo.template.replace) {
     // Just a little sugar... so folks can write 'ng-outlet' if they want
     ddo.template = ddo.template.replace(/ng-outlet/g, 'ui-view')
   }
 })
+
 
 componentHooks.after((target: any, name: string, injects: string[], ngModule: IModule) => {
   const childStateConfigs: IComponentState[] = componentStore.get(childConfigsKey, target)
@@ -94,7 +105,6 @@ componentHooks.after((target: any, name: string, injects: string[], ngModule: IM
     }
 
     ngModule.config(['$stateRegistryProvider', function($stateRegistry) {
-      // if (!$stateProvider) return
 
       function setupConfig(config) {
         if (!config.component) return null
@@ -110,6 +120,14 @@ componentHooks.after((target: any, name: string, injects: string[], ngModule: IM
           resolveFn.$inject = fnInjects
         })
         config.resolve = Object.assign({}, config.resolve, annotatedResolves)
+
+        const transitionHooks = componentStore.get(hooksKey, config.component) || {}
+        Object.keys(transitionHooks).forEach(key => {
+          const hookFn = transitionHooks[key]
+          hookFn.$inject = bundleStore.get('$inject', hookFn)
+        })
+
+        config = { ...config, ...transitionHooks }
 
         let name = providerStore.get('name', config.component)
 

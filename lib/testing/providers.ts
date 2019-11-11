@@ -19,7 +19,7 @@ let _providers = []
  * @param provideFn(provide):[Provider]
  * @returns {workFn}
  */
-export const providers = (provideFn) => {
+export const providers: any = (provideFn: any) => {
   return isSpecRunning() ? workFn() : workFn
 
   function workFn() {

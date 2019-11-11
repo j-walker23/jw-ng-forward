@@ -1,6 +1,6 @@
 {
   "name": "jw-ng-forward",
-  "version": "2.1.1",
+  "version": "2.3.2",
   "description": "Temporary package. The default solution for those that want to write Angular 2.x style code in Angular 1.x",
   "main": "index.js",
   "jsnext:main": "./es6/index.js",
@@ -18,9 +18,10 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
     "build:old": "npm run shit && npm run build:types && npm run build:js",
-    "build": "npm run shit && tsc",
+    "build": "npm run shit && tsc && cp package.json dist/",
     "build:types": "tsc --emitDeclarationOnly",
-    "build:js": "babel lib --out-dir dist --source-maps --extensions '.ts' --ignore 'lib/tests/*' --ignore 'lib/**/*.spec.ts'",
+    "build:js": "babel lib --out-dir dist --extensions '.ts' --ignore 'lib/tests/*' --ignore 'lib/**/*.spec.ts'",
+    "oldbuild:js": "babel lib --out-dir dist --source-maps --extensions '.ts' --ignore 'lib/tests/*' --ignore 'lib/**/*.spec.ts'",
     "dev": "nodemon --watch babel.config.js --watch lib --exec npm run build:js"
   },
   "keywords": [
@@ -45,8 +46,9 @@
   "dependencies": {
     "@uirouter/angularjs": "*",
     "angular": "*",
+    "jquery": "*",
     "reflect-metadata": "*",
-    "rxjs": "^5.0.0-beta.12"
+    "rxjs": "^6.3.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.0",
